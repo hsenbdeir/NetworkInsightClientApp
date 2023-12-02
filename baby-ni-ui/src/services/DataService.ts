@@ -1,5 +1,5 @@
 import { IFiterValues } from "../models/AggregatedData/IFiterValues";
-import { Result } from "../models/User/IUsers";
+import { Result } from "../models/User/IResult";
 import { ApiBase } from "./API";
 import moment from "moment";
 

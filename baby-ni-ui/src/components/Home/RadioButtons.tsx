@@ -15,7 +15,6 @@ const RadioButtons: React.FC<RadioButtonsProps> = ({ filterValues, onFilterChang
 
   return (
     <Box>
-
       <Typography variant="h4" sx={{ fontWeight: 'bold', fontSize: '20px', marginBottom: '20px', color: '#555' }}>
         Please click the filters to see the data.
       </Typography>
@@ -28,7 +27,7 @@ const RadioButtons: React.FC<RadioButtonsProps> = ({ filterValues, onFilterChang
           <RadioGroup
             aria-label="Global Filter"
             name="globalFilterValue"
-            value={filterValues.globalFilterValue}
+            value={filterValues.globalFilterValue || 'NeType'} // Set default value 'NeType'
             onChange={handleRadioChange}
             row
           >
@@ -46,7 +45,7 @@ const RadioButtons: React.FC<RadioButtonsProps> = ({ filterValues, onFilterChang
           <RadioGroup
             aria-label="Type of data"
             name="dateTimeFilterValue"
-            value={filterValues.dateTimeFilterValue}
+            value={filterValues.dateTimeFilterValue || 'Hourly'} // Set default value 'Hourly'
             onChange={handleRadioChange}
             row
           >

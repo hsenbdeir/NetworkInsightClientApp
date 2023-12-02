@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { DataTable } from "./DataTable";
 import DataService from "../../services/DataService";
 import { IFiterValues } from "../../models/AggregatedData/IFiterValues";
-import { Result } from "../../models/User/IUsers";
+import { Result } from "../../models/User/IResult";
 import DatePickerComponent from './DatePickerComponent';
 import 'react-datepicker/dist/react-datepicker.css';
 import RadioButtons from './RadioButtons';
@@ -14,7 +14,7 @@ const defaultDataState: Result[] = [];
 const defaultDataRequest = {
   globalFilterValue: "",
   dateTimeFilterValue: "",
-  startDate: new Date("2020-03-11"),
+  startDate: new Date("2020-03-1"),
   endDate: new Date("2020-03-13"),
 };
 
@@ -52,7 +52,13 @@ export default function Data() {
           ...getDataRequest,
         });
 
-        setData(response);
+        // Round the values in the rsL_Deviation column to 2 decimal places
+        const roundedResponse = response.map((item) => ({
+          ...item,
+          rsL_Deviation: Math.round(Number(item.rsL_Deviation) * 100) / 100,
+        }));
+
+        setData(roundedResponse);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
