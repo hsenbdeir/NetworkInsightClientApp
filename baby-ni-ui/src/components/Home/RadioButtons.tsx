@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormControl, Radio, RadioGroup, FormControlLabel, Box, Typography } from '@mui/material';
 import { IFiterValues } from '../../models/AggregatedData/IFiterValues';
 
 interface RadioButtonsProps {
@@ -6,58 +7,55 @@ interface RadioButtonsProps {
   onFilterChange: (filterValues: IFiterValues) => void;
 }
 
-const RadioButtons: React.FC<RadioButtonsProps> = ({ 
-    filterValues,
-     onFilterChange 
-}) => {
+const RadioButtons: React.FC<RadioButtonsProps> = ({ filterValues, onFilterChange }) => {
   const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     onFilterChange({ ...filterValues, [name]: value });
-    
   };
 
   return (
-    <div>
-      <label>
-        Global Filter:
-        <input
-          type="radio"
-          name="globalFilterValue"
-          value="NeType"
-          checked={filterValues.globalFilterValue === 'NeType'}
-          onChange={handleRadioChange}
-        />
-        NeType
-        <input
-          type="radio"
-          name="globalFilterValue"
-          value="NeAlias"
-          checked={filterValues.globalFilterValue === 'NeAlias'}
-          onChange={handleRadioChange}
-        />
-        NeAlias
-      </label>
+    <Box>
 
-      <label style = {{padding : '20px'}}>
-        Date Time Filter:
-        <input
-          type="radio"
-          name="dateTimeFilterValue"
-          value="Hourly"
-          checked={filterValues.dateTimeFilterValue === 'Hourly'}
-          onChange={handleRadioChange}
-        />
-        Hourly
-        <input
-          type="radio"
-          name="dateTimeFilterValue"
-          value="Daily"
-          checked={filterValues.dateTimeFilterValue === 'Daily'}
-          onChange={handleRadioChange}
-        />
-        Daily
-      </label>
-    </div>
+      <Typography variant="h4" sx={{ fontWeight: 'bold', fontSize: '20px', marginBottom: '20px', color: '#555' }}>
+        Please click the filters to see the data.
+      </Typography>
+
+      <Box display="flex" flexDirection="row" alignItems="center">
+        <FormControl component="fieldset">
+          <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', fontSize: '20px', color: '#333' }}>
+            Global Filter
+          </Typography>
+          <RadioGroup
+            aria-label="Global Filter"
+            name="globalFilterValue"
+            value={filterValues.globalFilterValue}
+            onChange={handleRadioChange}
+            row
+          >
+            <FormControlLabel value="NeType" control={<Radio />} label="NeType" />
+            <FormControlLabel value="NeAlias" control={<Radio />} label="NeAlias" />
+          </RadioGroup>
+        </FormControl>
+
+        <Box ml={4} />
+
+        <FormControl component="fieldset">
+          <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', fontSize: '20px', color: '#333' }}>
+            Type of data
+          </Typography>
+          <RadioGroup
+            aria-label="Type of data"
+            name="dateTimeFilterValue"
+            value={filterValues.dateTimeFilterValue}
+            onChange={handleRadioChange}
+            row
+          >
+            <FormControlLabel value="Hourly" control={<Radio />} label="Hourly" />
+            <FormControlLabel value="Daily" control={<Radio />} label="Daily" />
+          </RadioGroup>
+        </FormControl>
+      </Box>
+    </Box>
   );
 };
 

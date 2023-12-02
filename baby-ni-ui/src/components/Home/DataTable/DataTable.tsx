@@ -10,6 +10,8 @@ import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import { Result } from "../../../models/User/IUsers";
 import { IFiterValues } from "../../../models/AggregatedData/IFiterValues";
+import TablePagination from "@mui/material/TablePagination";
+import LineChartComponent from "./LineChartComponent";
 
 interface HeadCell {
   disablePadding: boolean;
@@ -18,26 +20,7 @@ interface HeadCell {
   numeric: boolean;
 }
 // use of Styled components from Material UI.
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.grey,
-    color: theme.palette.common.black,
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
-  },
-  padding: "5px",
-}));
 
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  "&:nth-of-type(odd)": {
-    backgroundColor: theme.palette.action.hover,
-  },
-  // hide last border
-  "&:last-child td, &:last-child th": {
-    border: 0,
-  },
-}));
 
 const headCells: readonly HeadCell[] = [
   { id: "time", numeric: false, disablePadding: false, label: "Time", },
@@ -52,67 +35,78 @@ type Props = {
   gridData: any; 
   handleChangeDataRequest: any; 
   getGridData: IFiterValues;
-  // hide:boolean,
 };
 export default function EnhancedTable(props: Props) {
-  //console.log("Inside DataTable Component");
   const { gridData } = props;
-  const [ ,setResults] = React.useState<Result[]>([]);
-  // const [filteredHeadCells,setFilteredHeadCells] = React.useState< HeadCell[]>([]);
-
- 
- // console.log('Results in DataTable:', gridData);
+  const [visibleHeadCells, setVisibleHeadCells] = React.useState<readonly HeadCell[]>(headCells);
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   React.useEffect(() => {
-   
-  //  console.log("Inside useEffect");
-  // if (hide) {
-  //   setFilteredHeadCells( headCells.filter(cell => cell.id !== "neType"))
-  // } else {
-   
-  //   setFilteredHeadCells( headCells.filter(cell => cell.id !== "neAlias"))
-  // }
-    setResults(gridData.results || []);
-  }, [gridData.results]);
+    // Filter the headCells based on the selected globalFilterValue
+    const filteredHeadCells = headCells.filter(
+      (cell) => cell.id === 'time' || cell.id === 'rfInputPower' || cell.id === 'maxRxLevel' || cell.id === 'rsL_Deviation' || gridData.some((row: any) => row[cell.id])
+    );
 
-  //console.log('data in DataTable2:', gridData);
+    setVisibleHeadCells(filteredHeadCells);
+  }, [gridData, props.getGridData.globalFilterValue]);
+
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   return (
-    <Box sx={{ width: "100%" }}>
-      <Paper sx={{ width: "100%", mb: 2 }}>
+    <Box sx={{ width: '100%' }}>
+      <Paper sx={{ width: '100%', mb: 2 }}>
         <TableContainer>
-        <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={"medium"}>
-  <TableHead>
-    <TableRow>
-      {headCells.map((headcells: any) => (
-        <StyledTableCell 
-        key={headcells.id}>{headcells.label}
-        </StyledTableCell>
-      ))}
-    </TableRow>
-  </TableHead>
-  <TableBody>
-    {gridData.length > 0 ? (
-      gridData.map((row :any , index : any) => (
-        <StyledTableRow key={index}>
-          {headCells.map((cell) => (
-            <StyledTableCell 
-            key={cell.id}>{row[cell.id]?.toString() ?? 'N/A'}
-            </StyledTableCell>
-          ))}
-        </StyledTableRow>
-      ))
-    ) : (
-      <StyledTableRow>
-        <StyledTableCell 
-        colSpan={headCells.length} align="center">No data available
-        </StyledTableCell>
-      </StyledTableRow>
-    )}
-  </TableBody>
-</Table>
+          <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={'small'}>
+            <TableHead>
+              <TableRow>
+                {visibleHeadCells.map((headcells: any) => (
+                  <TableCell key={headcells.id} sx={{ textAlign: 'left', fontWeight: 'bold', backgroundColor: '#f2f2f2' }}>{headcells.label}</TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {gridData.length > 0 ? (
+                gridData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row: any, index: any) => (
+                  <TableRow key={index}>
+                    {visibleHeadCells.map((cell) => (
+                      <TableCell key={cell.id} sx={{ borderBottom: '1px solid #ddd', padding: '12px' }}>{row[cell.id]}</TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={visibleHeadCells.length} align="center" sx={{ borderBottom: '1px solid #ddd', padding: '12px' }}>
+                    No data available
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
         </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={gridData.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          sx={{ borderTop: '1px solid #ddd' }}
+        />
       </Paper>
+
+      <LineChartComponent data={gridData} />
     </Box>
   );
 
 }
+

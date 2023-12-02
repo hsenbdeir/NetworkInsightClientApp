@@ -5,7 +5,7 @@ export interface Result {
   neAlias: string,
   rfInputPower: number,
   maxRxLevel: number,
-  rsL_Deviation: number
+  rsL_Deviation: number,
 
 }
 
