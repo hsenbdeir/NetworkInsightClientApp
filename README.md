@@ -26,20 +26,21 @@ Technologies Used
 ## Package References
  
 The project uses the following  packages:
+
 CsvHelper (version 30.0.1):
-
 A library for reading and writing CSV files.
-Microsoft.AspNetCore.OpenApi (version 7.0.12):
 
+Microsoft.AspNetCore.OpenApi (version 7.0.12):
 Provides integration with Swagger and OpenAPI for documenting and testing APIs.
+
 Microsoft.VisualStudio.Azure.Containers.Tools.Targets (version 1.19.4):
 
 Azure Container Tools for Visual Studio; facilitates containerized development and deployment to Azure. //was not used
+
 Swashbuckle.AspNetCore (version 6.5.0):
-
 Adds Swagger/OpenAPI documentation to ASP.NET Core APIs.
-System.Data.Odbc:
 
+System.Data.Odbc:
 ODBC (Open Database Connectivity) support for .NET applications.
 
 
